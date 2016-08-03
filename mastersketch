@@ -1,0 +1,108 @@
+// Arduino Sketch
+// mastersketch
+
+int bodenfeuchtigkeitpin=A1;          // bestimmt, welcher analoge PIN ausgelesen werden soll
+int bodenfeutchtigkeitwert=0;         // Variable für Bodenfeutchtigkeitswert
+
+int wasserschadenpin=A2;              // bestimmt, analoge welcher PIN ausgelesen werden soll
+int wasserschadenwert=0;              // Variable für Wasserschadenwert
+
+int lichtsensorpin=A3;                // bestimmt, welcher analoge PIN ausgelesen werden soll
+int lichtsensorwert=0;                // Variable für Lichtsensorwert
+
+int ledblaupin=6;                     // bestimmt, welcher digitale PIN angesprochen werden soll
+int ledbgruenpin=7;                   // bestimmt, welcher digitale PIN angesprochen werden soll
+int ledbgelbpin=8;                    // bestimmt, welcher digitale PIN angesprochen werden soll
+
+int kurzerdelay=200;                  // Zeitintervall des kurzen Delays
+int standarddelay=1000;               // Zeitintervall des standard Delays
+int langerdelay=2000;                 // Zeitintervall des langen Delays
+
+
+void setup()                          
+{                                     
+    
+    pinMode(ledblaupin, OUTPUT);       // Digitaler Pin wird als Ausgang definiert
+    pinMode(ledbgruenpin, OUTPUT);     // Digitaler Pin wird als Ausgang definiert
+    pinMode(ledbgelbpin, OUTPUT);      // Digitaler Pin wird als Ausgang definiert
+    
+    delay(kurzerdelay);                // definierter Delay
+    
+    Serial.begin(9600);                // startet den seriellen  Monitor
+    delay(langerdelay);                // definierter Delay
+}
+
+
+
+void loop() 
+{  
+    bodenfeutchtigkeitwert=analogRead(bodenfeuchtigkeitpin);
+    map(bodenfeutchtigkeitwert, 0, 1023, 0, 100);
+    
+    Serial.print("Bodenfeuchte = ");
+    Serial.print(bodenfeutchtigkeitwert);
+    Serial.println(" %");
+    delay(standarddelay);
+    
+    if (bodenfeutchtigkeitwert < 15)
+      {
+      digitalWrite(ledbgruenpin, HIGH);
+      delay(standarddelay);
+      }
+    else
+      {
+      digitalWrite(ledbgruenpin, LOW);
+      delay(standarddelay);
+      }
+    delay(kurzerdelay);
+    
+    wasserschadenwert=analogRead(wasserschadenpin);
+    wasserschadenwert=map(wasserschadenwert, 0, 1023, 0, 10);
+    
+    Serial.print("Wasserschaden = ");
+    Serial.print(wasserschadenwert);
+    Serial.println(". Stufe");
+    delay(standarddelay);
+    
+    if (wasserschadenwert > 4)
+      {
+      digitalWrite(ledblaupin, HIGH);
+      delay(standarddelay);
+      }
+    else
+      {
+      digitalWrite(ledblaupin, LOW);
+      delay(standarddelay);
+      }
+    delay(kurzerdelay);
+
+    lichtsensorwert=analogRead(lichtsensorpin);
+    lichtsensorwert=map(lichtsensorwert, 0, 1023, 100, 0);
+    
+    Serial.print("Helligkeit = ");
+    Serial.print(lichtsensorwert);
+    Serial.println(" %");
+    delay(standarddelay);
+    
+    if (lichtsensorwert > 15)
+      {
+      digitalWrite(ledbgelbpin, HIGH);
+      delay(standarddelay);
+      }
+    else
+      {
+      digitalWrite(ledbgelbpin, LOW);
+      delay(standarddelay);
+      }
+    delay(kurzerdelay);
+
+    Serial.println();
+}
+
+
+
+
+
+
+
+
